@@ -10,6 +10,11 @@ const { runDetector } = require("./services/detector");
 
 const app = express();
 
+app.use((req, res, next) => {
+  console.log("🔥 GLOBAL HIT:", req.method, req.url);
+  next();
+});
+
 app.use(cors());
 app.use(express.json());
 
@@ -23,8 +28,8 @@ async function start() {
 
   runDetector(); // YOLO
 
-  app.listen(5000, "0.0.0.0", () => {
-    console.log("✅ Server running on port 5000");
+  app.listen(5001, "0.0.0.0", () => {
+    console.log("✅ Server running on port 5001");
   });
 }
 

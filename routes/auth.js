@@ -9,6 +9,9 @@ const tokenRequired = require("../middleware/jwt");
 
 // ================= REGISTER =================
 router.post("/register", async (req, res) => {
+  console.log("🔥 HIT REGISTER");
+  console.log(req.body);
+
   try {
     const { username, password, email } = req.body;
 
@@ -32,11 +35,11 @@ router.post("/register", async (req, res) => {
       password: hashed
     });
 
-    res.json({ message: "User created" });
+    return res.json({ message: "User created" });
 
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Server error" });
+    return res.status(500).json({ error: "Server error" });
   }
 });
 

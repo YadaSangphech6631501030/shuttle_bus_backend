@@ -2,41 +2,36 @@ const express = require("express");
 const router = express.Router();
 
 const { getDB } = require("../db");
-const tokenRequired = require("../middleware/jwt");
 
-// latest
-router.get("/latest", tokenRequired, async (req, res) => {
-  const db = getDB();
-  const col = db.collection("people_count");
+router.get("/:line", async (req, res) => {
+  try {
+    const line = req.params.line;
 
-  const data = await col
-    .find({ station: "station1" })
-    .sort({ timestamp: -1 })
-    .limit(1)
-    .toArray();
+    const db = getDB();
+    const col = db.collection("stations");
 
-  if (data.length === 0) return res.json({});
+    const data = await col.find({
+      lines: line
+    }).toArray();
 
-  res.json({
-    station1: {
-      waiting: data[0].waiting,
-      status: data[0].status
-    }
-  });
+   const updatedStations = data.map((s) => {
+    let waiting = s.waiting ?? 0;
+
+  let status = "LOW";
+  if (waiting >= 10) status = "HIGH";
+  else if (waiting >= 5) status = "MEDIUM";
+
+  let eta = Math.floor(Math.random() * 6) + 3;
+
+  return { ...s, waiting, status, eta };
 });
 
-// all
-router.get("/all", async (req, res) => {
-  const db = getDB();
-  const col = db.collection("people_count");
+    res.json(updatedStations);
 
-  const data = await col
-    .find()
-    .sort({ timestamp: -1 })
-    .limit(20)
-    .toArray();
-
-  res.json(data);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "server error" });
+  }
 });
 
 module.exports = router;

@@ -3,7 +3,7 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-const { getDB } = require("../db");
+const { getDB } = require("../config/db");
 const { SECRET_KEY } = require("../config");
 const tokenRequired = require("../middleware/jwt");
 

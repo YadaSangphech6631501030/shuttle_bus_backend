@@ -1,10 +1,12 @@
 const express = require("express");
 const cors = require("cors");
 
-const { connectDB } = require("./db");
+const { connectDB } = require("./config/db");
 
 const authRoutes = require("./routes/auth");
 const stationRoutes = require("./routes/station");
+const busRoutes = require("./routes/bus.routes");
+const startEngine = require("./engines/movement.engine");
 
 const { runDetector } = require("./services/detector");
 
@@ -23,6 +25,7 @@ app.use(express.json());
 // ===== ROUTES =====
 app.use("/auth", authRoutes);
 app.use("/station", stationRoutes);
+app.use("/api", busRoutes);
 
 // ===== HEALTH CHECK (แนะนำ) =====
 app.get("/", (req, res) => {
@@ -34,6 +37,7 @@ async function start() {
   try {
     // 🔥 connect MongoDB
     await connectDB();
+    startEngine();  
     console.log("✅ MongoDB connected");
 
     // 🔥 start YOLO detector

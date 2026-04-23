@@ -1,5 +1,5 @@
 const { MongoClient } = require("mongodb");
-const { MONGO_URI, DB_NAME } = require("../config");
+const { MONGO_URI, DB_NAME } = require("./config");
 
 const client = new MongoClient(MONGO_URI);
 

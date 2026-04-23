@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { getDB } = require("../config/db");
+const { getDB } = require("../db");
 
 // GET /api/buses
 router.get("/buses", async (req, res) => {

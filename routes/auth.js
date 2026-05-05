@@ -7,6 +7,7 @@ const { connectDB, getDB } = require("../db");
 
 const { SECRET_KEY } = require("../config");
 const tokenRequired = require("../middleware/jwt");
+const adminOnly = require("../middleware/admin");
 
 // ================= REGISTER =================
 router.post("/register", async (req, res) => {
@@ -33,7 +34,8 @@ router.post("/register", async (req, res) => {
     await users.insertOne({
       username,
       email,
-      password: hashed
+      password: hashed,
+      role: "user"
     });
 
     return res.json({ message: "User created" });
@@ -65,12 +67,19 @@ router.post("/login", async (req, res) => {
     }
 
     const token = jwt.sign(
-      { username },
+      { 
+        id: user._id,
+        username: user.username,
+        role: user.role
+       },
       SECRET_KEY,
       { expiresIn: "2h" }
     );
 
-    res.json({ token });
+    res.json({ 
+      token,
+      role: user.role
+     });
 
   } catch (err) {
     console.error(err);
@@ -146,6 +155,30 @@ router.put("/update", tokenRequired, async (req, res) => {
     console.error(err);
     res.status(500).json({ error: "Server error" });
   }
+});
+
+// admin
+router.get("/admin/users", tokenRequired, adminOnly, async (req, res) => {
+  try {
+    const db = getDB();
+    const users = db.collection("users");
+
+    const allUsers = await users.find().toArray();
+
+    res.json(allUsers);
+  } catch (err) {
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+//delete only admin
+router.delete("/admin/user/:username", tokenRequired, adminOnly, async (req, res) => {
+  const db = getDB();
+  const users = db.collection("users");
+
+  await users.deleteOne({ username: req.params.username });
+
+  res.json({ message: "User deleted" });
 });
 
 module.exports = router;

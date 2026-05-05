@@ -7,6 +7,7 @@ const authRoutes = require("./routes/auth");
 const stationRoutes = require("./routes/station");
 const busRoutes = require("./routes/bus.routes");
 const startEngine = require("./engines/movement.engine");
+const reportRoutes = require("./routes/report.routes");
 
 const { runDetector } = require("./services/detector");
 
@@ -26,6 +27,7 @@ app.use(express.json());
 app.use("/auth", authRoutes);
 app.use("/station", stationRoutes);
 app.use("/api", busRoutes);
+app.use("/api", reportRoutes);
 
 // ===== HEALTH CHECK (แนะนำ) =====
 app.get("/", (req, res) => {

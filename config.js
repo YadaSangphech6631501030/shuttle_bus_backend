@@ -4,6 +4,6 @@ module.exports = {
 
   SECRET_KEY: "super_secret_key_123",
 
-  CAMERA_URL: "http://172.25.58.66:4747/video",
+  CAMERA_URL: "http://192.168.110.11:4747/video",
   SAVE_INTERVAL: 5
 };

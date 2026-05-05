@@ -8,7 +8,7 @@ import sys
 # ===== CONFIG =====
 MONGO_URI = "mongodb://localhost:27017/"
 DB_NAME = "shuttlebus_system"
-COLLECTION = "people_count"
+COLLECTION = "stations"
 
 CAMERA_URL = sys.argv[1] if len(sys.argv) > 1 else 0
 SAVE_INTERVAL = 5
@@ -112,12 +112,16 @@ while True:
 
     if current_time - last_save_time >= SAVE_INTERVAL:
         try:
-            collection.insert_one({
-                "station": "station1",
-                "waiting": current_count,
-                "status": status,
-                "timestamp": datetime.now()
-            })
+            collection.update_one(
+    {"id": "station1"},
+    {
+        "$set": {
+            "waiting": current_count,
+            "status": status,
+            "updatedAt": datetime.now()
+        }
+    }
+)
 
             print(f"✅ Saved → {current_count} ({status})")
 
